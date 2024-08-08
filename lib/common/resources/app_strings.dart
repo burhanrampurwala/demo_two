@@ -10,4 +10,5 @@ class AppStrings {
   static const String task_textfield_hint_text = "Enter Task";
   static const String task_dialog_cancel_text = "Cancel";
   static const String task_dialog_submit_text = "Submit";
+  static const String task_dialog_update_text = "Update";
 }

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:demo_two/presentation/to_do_list/bloc/todo_list_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,4 +37,18 @@ void handleLoadTaskEvent({
   List<Todo> tempList = [];
   tempList.addAll(state.todoList);
   emit(state.copyWith(isLoading: false, todoList: tempList));
+}
+
+void handleUpdateTaskEvent({
+  required Emitter<TodoListState> emit,
+  required TriggerUpdateTask event,
+  required TodoListState state,
+}) {
+  emit(state.copyWith(isLoading: true));
+
+  final updatedTasks = state.todoList.map((task) {
+    return task.id == event.todoTask.id ? event.todoTask : task;
+  }).toList();
+
+  emit(state.copyWith(todoList: updatedTasks));
 }

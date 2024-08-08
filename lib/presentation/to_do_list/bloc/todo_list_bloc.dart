@@ -19,6 +19,8 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     on<TriggerAddTask>(_onTriggerAddTask);
     on<TriggerDeleteTask>(_onTriggerDeleteTask);
     on<TriggerLoadTask>(_onTriggerLoadTask);
+    on<TriggerUpdateTask>(_onTriggerUpdateTask);
+
   }
 
   FutureOr<void> _onTriggerAddTask(
@@ -34,5 +36,10 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
   FutureOr<void> _onTriggerLoadTask(
       TriggerLoadTask event, Emitter<TodoListState> emit) {
     handleLoadTaskEvent(emit: emit, event: event, state: state);
+  }
+
+  FutureOr<void> _onTriggerUpdateTask(
+      TriggerUpdateTask event, Emitter<TodoListState> emit) {
+    handleUpdateTaskEvent(emit: emit, event: event, state: state);
   }
 }

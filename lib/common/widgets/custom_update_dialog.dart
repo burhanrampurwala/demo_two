@@ -4,7 +4,7 @@ import 'package:demo_two/presentation/to_do_list/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-Future<void> showMyDialog(TodoListBloc todoBloc, BuildContext context,
+Future<void> showUpdateDialog(TodoListBloc todoBloc, BuildContext context,
     TextEditingController titleController) async {
   return showDialog<void>(
     context: context,
@@ -34,15 +34,14 @@ Future<void> showMyDialog(TodoListBloc todoBloc, BuildContext context,
                 },
               ),
               TextButton(
-                child: const Text(AppStrings.task_dialog_submit_text),
+                child: const Text(AppStrings.task_dialog_update_text),
                 onPressed: () {
-                  final String input = state.titleController.text.trim();
-                  todoBloc.add(TriggerAddTask(
+                  final String input = titleController.text.trim();
+                  todoBloc.add(TriggerUpdateTask(
                       todoTask: Todo(
-                    id: DateTime.now().millisecondsSinceEpoch,
+                        id: state.todoList.last.id,
                     title: input,
                   )));
-                  state.titleController.clear();
                   Navigator.of(context).pop();
                 },
               ),

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../common/dimensions/paddings.dart';
 import '../../../common/widgets/custom_alert_dialog.dart';
+import '../../../common/widgets/custom_update_dialog.dart';
 import '../../../di/di.dart';
 import '../../../imports/common.dart';
 
@@ -66,20 +67,27 @@ class _TodoListViewState extends State<TodoListView> {
                     itemCount: state.todoList.length,
                     itemBuilder: (context, index) {
                       final todo = state.todoList[index];
-                      return Card(
-                        margin: EdgeInsets.symmetric(
-                            vertical: cardVerticalPadding,
-                            horizontal: cardHorizontalPadding),
-                        child: ListTile(
-                          contentPadding:
-                              EdgeInsets.all(listItemSpaceInBetween),
-                          title: Text(todo.title),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              _todoBloc.add(TriggerDeleteTask(
-                                  taskId: state.todoList[index].id));
-                            },
+                      return GestureDetector(
+                        onTap: () async {
+                          final titleController = TextEditingController(text: todo.title);
+                          await showUpdateDialog(
+                              _todoBloc, context, titleController);
+                        },
+                        child: Card(
+                          margin: EdgeInsets.symmetric(
+                              vertical: cardVerticalPadding,
+                              horizontal: cardHorizontalPadding),
+                          child: ListTile(
+                            contentPadding:
+                                EdgeInsets.all(listItemSpaceInBetween),
+                            title: Text(todo.title),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                _todoBloc.add(TriggerDeleteTask(
+                                    taskId: state.todoList[index].id));
+                              },
+                            ),
                           ),
                         ),
                       );

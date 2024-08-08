@@ -9,4 +9,4 @@ Future<void> initTodoModule() async {
   if (!GetIt.I.isRegistered<TodoListBloc>()) {
     instance.registerFactory<TodoListBloc>(() => TodoListBloc());
   }
-} //For splash screen
+}

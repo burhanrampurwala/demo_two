@@ -34,3 +34,12 @@ class TriggerDeleteTask extends TodoListEvent {
   @override
   List<Object> get props => [taskId];
 }
+
+class TriggerUpdateTask extends TodoListEvent {
+  final Todo todoTask;
+
+  const TriggerUpdateTask({required this.todoTask});
+
+  @override
+  List<Object> get props => [todoTask];
+}
