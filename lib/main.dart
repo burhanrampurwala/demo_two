@@ -5,11 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 import 'common/resources/routes.dart';
+import 'di/di.dart';
 
 Future<void> mainForEnvironment() async {
   WidgetsFlutterBinding.ensureInitialized();
-  print("Environment is ${AppEnvironments.environments}");
-  print("Environment is ${AppEnvironments.appName}");
+  await initTodoModule();
+
   runApp(const MyApp());
 }
 

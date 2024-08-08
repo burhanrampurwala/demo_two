@@ -8,4 +8,6 @@ class AppStrings {
   static const String todo_title = "Todo App";
   static const String task_title_text = "Add Task";
   static const String task_textfield_hint_text = "Enter Task";
+  static const String task_dialog_cancel_text = "Cancel";
+  static const String task_dialog_submit_text = "Submit";
 }

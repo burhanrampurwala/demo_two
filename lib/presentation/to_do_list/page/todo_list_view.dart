@@ -1,10 +1,12 @@
+import 'package:demo_two/common/dimensions/other_constants.dart';
 import 'package:demo_two/common/resources/style.dart';
 import 'package:demo_two/presentation/to_do_list/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../common/dimensions/paddings.dart';
 import '../../../common/widgets/custom_alert_dialog.dart';
-import '../../../data/model/todo_model.dart';
+import '../../../di/di.dart';
 import '../../../imports/common.dart';
 
 class TodoListView extends StatefulWidget {
@@ -15,72 +17,77 @@ class TodoListView extends StatefulWidget {
 }
 
 class _TodoListViewState extends State<TodoListView> {
+  final TodoListBloc _todoBloc = instance<TodoListBloc>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TodoListBloc>(
-      create: (context) => TodoListBloc(),
+    return BlocProvider(
+      create: (context) => _todoBloc,
       child: BlocConsumer<TodoListBloc, TodoListState>(
-        listener: (context, state) {},
-        builder: (context, state) {
-            return  Scaffold(
-              backgroundColor: AppColor.colorScaffold,
-              appBar: AppBar(
-                title: Text(
-                  AppStrings.todo_title,
-                  style: Style.appBarTitleStyle(color: AppColor.colorPrimary),
-                ),
-                centerTitle: true,
-                actions: [
-                  IconButton(
-                    onPressed: () async {
-                      await showMyDialog(context, state.titleController);
-                      BlocProvider.of<TodoListBloc>(context).add(const TriggerLoadTask());
-                    },
-                    icon: const Icon(Icons.add, size: 30),
-                  ),
-                ],
-              ),
-              body: Column(
-                children: [
-                  TextFormField(
-                    controller: state.titleController,
-                    decoration: const InputDecoration(
-                        hintText: AppStrings.task_textfield_hint_text),
-                  ),
-                  TextButton(
-                    child: const Text('Submit'),
-                    onPressed: () {
-                      final String input = state.titleController.text.trim();
-                      print('User input: $input');
-                      BlocProvider.of<TodoListBloc>(context).add(TriggerAddTask(
-                          todoTask: Todo(
-                            id: 0 + 1,
-                            title: input,
-                          )));
-                      print('Event: $input');
-                    },
-                  ),
-                  state.isLoading ? const Center(child: CircularProgressIndicator()) :
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.todoList.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          color: Colors.purple.shade50,
-                          child: Text(state.todoList[index].title, style: Style.appBarTitleStyle(color: Colors.purple),),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            );
-          }
-      ),
+          listener: (context, state) {},
+          builder: (context, state) {
+            return _buildBody(state);
+          }),
     );
   }
 
-  // _buildBody(TodoListState state) {
-  //   return
-  // }
+  _buildBody(TodoListState state) {
+    return Scaffold(
+      backgroundColor: AppColor.colorScaffold,
+      appBar: AppBar(
+        title: Text(
+          AppStrings.todo_title,
+          style: Style.appBarTitleStyle(color: AppColor.colorPrimary),
+        ),
+        centerTitle: true,
+        elevation: cardElevation,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await showMyDialog(_todoBloc, context, state.titleController);
+        },
+        child: const Icon(
+          Icons.add,
+          size: 30,
+          color: Colors.black,
+        ),
+      ),
+      body: Column(
+        children: [
+          state.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : Expanded(
+                  child: ListView.builder(
+                    itemCount: state.todoList.length,
+                    itemBuilder: (context, index) {
+                      final todo = state.todoList[index];
+                      return Card(
+                        margin: EdgeInsets.symmetric(
+                            vertical: cardVerticalPadding,
+                            horizontal: cardHorizontalPadding),
+                        child: ListTile(
+                          contentPadding:
+                              EdgeInsets.all(listItemSpaceInBetween),
+                          title: Text(todo.title),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              _todoBloc.add(TriggerDeleteTask(
+                                  taskId: state.todoList[index].id));
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+        ],
+      ),
+    );
+  }
 }
