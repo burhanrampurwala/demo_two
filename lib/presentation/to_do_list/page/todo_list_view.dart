@@ -28,7 +28,7 @@ class _TodoListViewState extends State<TodoListView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => _todoBloc,
+      create: (context) => _todoBloc..add(const TriggerLoadTask()),
       child: BlocConsumer<TodoListBloc, TodoListState>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -69,9 +69,10 @@ class _TodoListViewState extends State<TodoListView> {
                       final todo = state.todoList[index];
                       return GestureDetector(
                         onTap: () async {
-                          final titleController = TextEditingController(text: todo.title);
+                          final titleController =
+                              TextEditingController(text: todo.title);
                           await showUpdateDialog(
-                              _todoBloc, context, titleController);
+                              _todoBloc, context, titleController, index);
                         },
                         child: Card(
                           margin: EdgeInsets.symmetric(
@@ -85,7 +86,7 @@ class _TodoListViewState extends State<TodoListView> {
                               icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
                                 _todoBloc.add(TriggerDeleteTask(
-                                    taskId: state.todoList[index].id));
+                                    taskId: todo.isarId));
                               },
                             ),
                           ),

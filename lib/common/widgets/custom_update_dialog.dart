@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 Future<void> showUpdateDialog(TodoListBloc todoBloc, BuildContext context,
-    TextEditingController titleController) async {
+    TextEditingController titleController, int index) async {
   return showDialog<void>(
     context: context,
     barrierDismissible: false,
@@ -37,11 +37,15 @@ Future<void> showUpdateDialog(TodoListBloc todoBloc, BuildContext context,
                 child: const Text(AppStrings.task_dialog_update_text),
                 onPressed: () {
                   final String input = titleController.text.trim();
-                  todoBloc.add(TriggerUpdateTask(
-                      todoTask: Todo(
-                        id: state.todoList.last.id,
-                    title: input,
-                  )));
+                  final updateTodo = Todo()
+                    ..isarId = state.todoList[index].isarId
+                    ..title = input
+                    ..completed = false;
+                  todoBloc.add(
+                    TriggerUpdateTask(
+                      todoTask: updateTodo,
+                    ),
+                  );
                   Navigator.of(context).pop();
                 },
               ),

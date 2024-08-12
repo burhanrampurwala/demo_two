@@ -3,6 +3,7 @@ import 'package:demo_two/data/model/todo_model.dart';
 import 'package:demo_two/presentation/to_do_list/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
 
 Future<void> showMyDialog(TodoListBloc todoBloc, BuildContext context,
     TextEditingController titleController) async {
@@ -37,11 +38,11 @@ Future<void> showMyDialog(TodoListBloc todoBloc, BuildContext context,
                 child: const Text(AppStrings.task_dialog_submit_text),
                 onPressed: () {
                   final String input = state.titleController.text.trim();
-                  todoBloc.add(TriggerAddTask(
-                      todoTask: Todo(
-                    id: DateTime.now().millisecondsSinceEpoch,
-                    title: input,
-                  )));
+                  final todo = Todo()
+                    ..isarId = Isar.autoIncrement
+                    ..title = input
+                    ..completed = false;
+                  todoBloc.add(TriggerAddTask(todoTask: todo));
                   state.titleController.clear();
                   Navigator.of(context).pop();
                 },
