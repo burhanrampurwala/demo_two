@@ -14,7 +14,7 @@ Future<void> showUpdateDialog(TodoListBloc todoBloc, BuildContext context,
         bloc: todoBloc,
         builder: (context, state) {
           return AlertDialog(
-            title: const Text(AppStrings.task_title_text),
+            title: const Text(AppStrings.task_dialog_update_text),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[

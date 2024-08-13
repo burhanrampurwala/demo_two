@@ -7,7 +7,7 @@ import '../../di/di.dart';
 import '../../presentation/splash/page/splash_view.dart';
 
 class RouteName {
-  //property owner
+
   static const String routeSplash = '/';
   static const String routeToDoListView = '/list-view-route';
 }
@@ -19,7 +19,6 @@ class Routes {
       case RouteName.routeSplash:
         return MaterialPageRoute(builder: (_) => const SplashView());
       case RouteName.routeToDoListView:
-        // initAuthenticationModule();
         initTodoModule();
         return MaterialPageRoute(builder: (_) => const TodoListView());
       default:

@@ -1,11 +1,13 @@
 import 'package:demo_two/common/dimensions/other_constants.dart';
 import 'package:demo_two/common/resources/style.dart';
+import 'package:demo_two/data/model/todo_model.dart';
 import 'package:demo_two/presentation/to_do_list/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../common/dimensions/paddings.dart';
 import '../../../common/widgets/custom_alert_dialog.dart';
+import '../../../common/widgets/custom_card.dart';
 import '../../../common/widgets/custom_update_dialog.dart';
 import '../../../di/di.dart';
 import '../../../imports/common.dart';
@@ -74,23 +76,7 @@ class _TodoListViewState extends State<TodoListView> {
                           await showUpdateDialog(
                               _todoBloc, context, titleController, index);
                         },
-                        child: Card(
-                          margin: EdgeInsets.symmetric(
-                              vertical: cardVerticalPadding,
-                              horizontal: cardHorizontalPadding),
-                          child: ListTile(
-                            contentPadding:
-                                EdgeInsets.all(listItemSpaceInBetween),
-                            title: Text(todo.title),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                _todoBloc.add(TriggerDeleteTask(
-                                    taskId: todo.isarId));
-                              },
-                            ),
-                          ),
-                        ),
+                        child: CustomCard(todoBloc: _todoBloc, todo: todo),
                       );
                     },
                   ),
