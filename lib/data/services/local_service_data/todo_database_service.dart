@@ -28,9 +28,17 @@ class TodoDatabaseService {
     return todoList;
   }
 
-  Future<void> updateTodo(Todo todo) async {
-    final existingTask = await DatabaseServices.isar.todos.get(todo.isarId);
+  Future<void> updateTodo({
+    required int id,
+    required String title,
+    final bool? completed,
+  }) async {
+    final existingTask = await DatabaseServices.isar.todos.get(id);
     if (existingTask != null) {
+      final todo = Todo()
+        ..isarId = id
+        ..title = title
+        ..completed = completed ?? false; // Default to false if not provided
       await DatabaseServices.isar
           .writeTxn(() => DatabaseServices.isar.todos.put(todo));
     }

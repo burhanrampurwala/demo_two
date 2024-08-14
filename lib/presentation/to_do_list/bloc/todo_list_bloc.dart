@@ -19,26 +19,32 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
     on<TriggerAddTask>(_onTriggerAddTask);
     on<TriggerDeleteTask>(_onTriggerDeleteTask);
     on<TriggerLoadTask>(_onTriggerLoadTask);
-    on<TriggerUpdateTask>(_onTriggerUpdateTask);
+    on<TriggerOnPressed>(_onTriggerOnPressed);
+    on<TriggerUpdateTodoTask>(_onTriggerUpdateTodo);
   }
 
-  FutureOr<void> _onTriggerAddTask(
-      TriggerAddTask event, Emitter<TodoListState> emit) async {
+  FutureOr<void> _onTriggerAddTask(TriggerAddTask event,
+      Emitter<TodoListState> emit) async {
     await handleAddTaskEvent(emit: emit, event: event, state: state);
   }
 
-  FutureOr<void> _onTriggerDeleteTask(
-      TriggerDeleteTask event, Emitter<TodoListState> emit)async {
+  FutureOr<void> _onTriggerDeleteTask(TriggerDeleteTask event,
+      Emitter<TodoListState> emit) async {
     await handleDeleteTaskEvent(emit: emit, event: event, state: state);
   }
 
-  FutureOr<void> _onTriggerLoadTask(
-      TriggerLoadTask event, Emitter<TodoListState> emit)async {
+  FutureOr<void> _onTriggerLoadTask(TriggerLoadTask event,
+      Emitter<TodoListState> emit) async {
     await handleLoadTaskEvent(emit: emit, event: event, state: state);
   }
 
-  FutureOr<void> _onTriggerUpdateTask(
-      TriggerUpdateTask event, Emitter<TodoListState> emit) async{
-    await handleUpdateTaskEvent(emit: emit, event: event, state: state);
+  FutureOr<void> _onTriggerOnPressed(TriggerOnPressed event,
+      Emitter<TodoListState> emit) async {
+    await handleOnPressedEvent(emit: emit, event: event, state: state);
+  }
+
+  FutureOr<void> _onTriggerUpdateTodo(TriggerUpdateTodoTask event,
+      Emitter<TodoListState> emit) async {
+    await handleUpdateTaskTodo(emit: emit, event: event, state: state);
   }
 }

@@ -43,3 +43,28 @@ class TriggerUpdateTask extends TodoListEvent {
   @override
   List<Object> get props => [todoTask];
 }
+
+class TriggerOnPressed extends TodoListEvent {
+  final int? id;
+  final String title;
+  final bool completed;
+  final bool isFromUpdate;
+  final Todo? todoTask;
+
+  const TriggerOnPressed(
+      {this.id, required this.title, required this.completed, required this.isFromUpdate, this.todoTask});
+
+  @override
+  List<Object> get props => [id!, title, completed, isFromUpdate, todoTask!];
+}
+
+
+class TriggerUpdateTodoTask extends TodoListEvent {
+  final String todoText;
+
+  const TriggerUpdateTodoTask({required this.todoText});
+
+  @override
+  List<Object> get props => [todoText];
+}
+
