@@ -1,5 +1,6 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:demo_two/app_config/app_environments.dart';
+import 'package:demo_two/data/services/todo_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -10,7 +11,7 @@ import 'di/di.dart';
 Future<void> mainForEnvironment() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initTodoModule();
-
+  await DatabaseServices.initDatabase();
   runApp(const MyApp());
 }
 

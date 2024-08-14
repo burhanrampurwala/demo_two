@@ -4,7 +4,7 @@ class AppStrings {
 // splash
   static const String splash_title = "Splash Screen";
 
-
+// Todo UI Screen
   static const String todo_title = "Todo App";
   static const String task_title_text = "Add Task";
   static const String task_textfield_hint_text = "Enter Task";

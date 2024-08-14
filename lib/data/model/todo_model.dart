@@ -1,11 +1,10 @@
-class Todo {
-  final int id;
-  final String title;
-  final bool completed;
+import 'package:isar/isar.dart';
 
-  Todo({
-    required this.id,
-    required this.title,
-    this.completed = false,
-  });
+part 'todo_model.g.dart';
+
+@collection
+class Todo {
+  Id isarId = Isar.autoIncrement;
+  late String title;
+  late bool completed;
 }

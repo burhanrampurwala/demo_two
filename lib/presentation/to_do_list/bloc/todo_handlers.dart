@@ -1,54 +1,79 @@
-import 'dart:ffi';
-
 import 'package:demo_two/presentation/to_do_list/bloc/todo_list_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/model/todo_model.dart';
+import '../../../data/services/local_service_data/todo_database_service.dart';
+import '../../../di/di.dart';
 
-void handleAddTaskEvent({
+TodoDatabaseService localStorage = instance<TodoDatabaseService>();
+
+Future<void> handleAddTaskEvent({
   required TriggerAddTask event,
   required Emitter<TodoListState> emit,
   required TodoListState state,
 }) async {
   emit(state.copyWith(isLoading: true));
-  List<Todo> tempList = [];
-  tempList.addAll(state.todoList);
-  tempList.add(event.todoTask);
-  emit(state.copyWith(isLoading: false, todoList: tempList));
+  await localStorage.addTodo(
+    id: event.todoTask.isarId,
+    title: event.todoTask.title,
+    completed: event.todoTask.completed,
+  );
+  final updatedList = await localStorage.getTodos();
+  emit(state.copyWith(isLoading: false, todoList: updatedList));
 }
 
-void handleDeleteTaskEvent({
+Future<void> handleDeleteTaskEvent({
   required TriggerDeleteTask event,
   required Emitter<TodoListState> emit,
   required TodoListState state,
 }) async {
   emit(state.copyWith(isLoading: true));
-  final updatedList =
-      state.todoList.where((task) => task.id != event.taskId).toList();
+  await localStorage.deleteTodo(event.taskId);
+  final updatedList = await localStorage.getTodos();
   emit(state.copyWith(isLoading: false, todoList: updatedList));
 }
 
-void handleLoadTaskEvent({
+Future<void> handleLoadTaskEvent({
   required TriggerLoadTask event,
   required Emitter<TodoListState> emit,
   required TodoListState state,
 }) async {
   emit(state.copyWith(isLoading: true));
-  List<Todo> tempList = [];
-  tempList.addAll(state.todoList);
-  emit(state.copyWith(isLoading: false, todoList: tempList));
+  List<Todo> loadedTasks = await localStorage.getTodos();
+  emit(state.copyWith(isLoading: false, todoList: loadedTasks));
 }
 
-void handleUpdateTaskEvent({
+Future<void> handleOnPressedEvent({
   required Emitter<TodoListState> emit,
-  required TriggerUpdateTask event,
+  required TriggerOnPressed event,
   required TodoListState state,
-}) {
+}) async {
   emit(state.copyWith(isLoading: true));
+  if (event.isFromUpdate) {
+    await localStorage.updateTodo(
+      id: event.id!,
+      title: state.titleController.text,
+      completed: event.completed,
+    );
+  } else {
+    await localStorage.addTodo(
+      id: event.id!,
+      title: event.title,
+      completed: event.completed,
+    );
+  }
+  List<Todo> loadedTasks = await localStorage.getTodos();
+  emit(state.copyWith(isLoading: false, todoList: loadedTasks));
+}
 
-  final updatedTasks = state.todoList.map((task) {
-    return task.id == event.todoTask.id ? event.todoTask : task;
-  }).toList();
 
-  emit(state.copyWith(todoList: updatedTasks));
+Future<void> handleUpdateTaskTodo({
+  required TriggerUpdateTodoTask event,
+  required Emitter<TodoListState> emit,
+  required TodoListState state,
+}) async {
+  emit(state.copyWith(isLoading: true));
+  List<Todo> loadedTasks = await localStorage.getTodos();
+  emit(state.copyWith(isLoading: false, titleController: TextEditingController(text: event.todoText),todoList: loadedTasks));
 }

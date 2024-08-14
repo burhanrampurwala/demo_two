@@ -3,10 +3,10 @@ import 'package:demo_two/common/resources/style.dart';
 import 'package:demo_two/presentation/to_do_list/bloc/todo_list_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:isar/isar.dart';
 
-import '../../../common/dimensions/paddings.dart';
 import '../../../common/widgets/custom_alert_dialog.dart';
-import '../../../common/widgets/custom_update_dialog.dart';
+import '../../../common/widgets/custom_card.dart';
 import '../../../di/di.dart';
 import '../../../imports/common.dart';
 
@@ -28,7 +28,7 @@ class _TodoListViewState extends State<TodoListView> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => _todoBloc,
+      create: (context) => _todoBloc..add(const TriggerLoadTask()),
       child: BlocConsumer<TodoListBloc, TodoListState>(
           listener: (context, state) {},
           builder: (context, state) {
@@ -50,7 +50,15 @@ class _TodoListViewState extends State<TodoListView> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await showMyDialog(_todoBloc, context, state.titleController);
+          await showMyDialog(_todoBloc, context, state.titleController, () {
+            _todoBloc.add(TriggerOnPressed(
+                id: Isar.autoIncrement,
+                title: state.titleController.text,
+                completed: false,
+                isFromUpdate: false));
+            state.titleController.clear();
+            Navigator.of(context).pop();
+          });
         },
         child: const Icon(
           Icons.add,
@@ -69,27 +77,18 @@ class _TodoListViewState extends State<TodoListView> {
                       final todo = state.todoList[index];
                       return GestureDetector(
                         onTap: () async {
-                          final titleController = TextEditingController(text: todo.title);
-                          await showUpdateDialog(
-                              _todoBloc, context, titleController);
+                          _todoBloc.add(TriggerUpdateTodoTask(todoText: todo.title));
+                          await showMyDialog(
+                              _todoBloc, context, state.titleController, () {
+                            _todoBloc.add(TriggerOnPressed(
+                                id: todo.isarId,
+                                title: state.titleController.text.trim(),
+                                completed: false,
+                                isFromUpdate: true));
+                            Navigator.of(context).pop();
+                          });
                         },
-                        child: Card(
-                          margin: EdgeInsets.symmetric(
-                              vertical: cardVerticalPadding,
-                              horizontal: cardHorizontalPadding),
-                          child: ListTile(
-                            contentPadding:
-                                EdgeInsets.all(listItemSpaceInBetween),
-                            title: Text(todo.title),
-                            trailing: IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () {
-                                _todoBloc.add(TriggerDeleteTask(
-                                    taskId: state.todoList[index].id));
-                              },
-                            ),
-                          ),
-                        ),
+                        child: CustomCard(todoBloc: _todoBloc, todo: todo),
                       );
                     },
                   ),
